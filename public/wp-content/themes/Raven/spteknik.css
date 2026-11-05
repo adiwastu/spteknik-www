@@ -354,3 +354,8 @@ footer{background:radial-gradient(120% 120% at 0 0,var(--sand) 0%,var(--sand-dee
 
 /* slots badge: pulsing red dot inside the pill */
 .slots-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#ff4444;margin-right:7px;vertical-align:middle;animation:promoPulse 1.6s ease-out infinite}
+
+/* Samsung Internet paint workaround: promote footer to its own compositing
+   layer so its content always paints (reports of footer-cta not rendering). */
+footer{transform:translateZ(0)}
+.footer-grid{transform:translateZ(0)}
