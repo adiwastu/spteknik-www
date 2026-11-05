@@ -1,0 +1,24 @@
+# secrets — never commit
+creds.env
+*.pem
+*.key
+
+# derived / local data
+crawl-out/
+report.json
+origin-snapshot.html
+dns-snapshot.json*
+*.zip
+
+# pipeline kit staging (contains a copy of creds.env)
+handoff/
+
+# backups
+backup/
+site-backup/
+
+# tooling
+node_modules/
+.wrangler/
+dist/
+dns-snapshot*
