@@ -16,7 +16,7 @@ import pathlib, re, sys
 p = pathlib.Path('public/index.html')
 s = p.read_text(encoding='utf-8')
 n = sys.argv[1]
-s, c1 = re.subn(r'(<span class="slots-badge"[^>]*>)[^<]*(</span>)', rf'\g<1>{n} slot tersisa\g<2>', s)
+s, c1 = re.subn(r'(<span class="slots-badge"[^>]*>(?:<span class="slots-dot"[^>]*></span>)?)[^<]*(</span>)', rf'\g<1>{n} slot tersisa\g<2>', s)
 if c1 != 1:
     print(f'ERROR: pricing card badge matches: {c1} (expected 1) — update manually')
     sys.exit(1)
