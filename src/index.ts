@@ -1,6 +1,12 @@
-// spteknik.com worker: serves static assets (assets-first) and 301s legacy
-// WordPress paths to their post-migration locations so old links keep working.
+// spteknik.com worker: serves static assets and 301s legacy WordPress paths to
+// their post-migration locations so old links keep working.
 // The site itself lives in public/ — edit there, deploy via git push (CI).
+//
+// Maintenance mode: flip the flag in src/flags.ts (or `bash tools/maintenance.sh on|off`).
+// When ON, every page request gets the maintenance page with HTTP 503 (SEO-safe);
+// static assets under /assets/ still load so the maintenance page renders.
+
+import { MAINTENANCE_MODE } from "./flags";
 
 interface Env {
   ASSETS: { fetch: (request: Request) => Response };
@@ -35,6 +41,9 @@ const REDIRECTS: Record<string, string> = {
 // dead WordPress endpoints → homepage
 const DEAD_PREFIXES = ["/wp-admin", "/wp-json", "/wp-login.php", "/wp-cron.php", "/xmlrpc.php", "/wp-sitemap", "/feed"];
 
+// paths that keep working even while the site is in maintenance mode
+const MAINTENANCE_ALLOWED = ["/assets/", "/maintenance", "/favicon.ico", "/robots.txt"];
+
 function redirect(to: string, request: Request): Response {
   return new Response(null, {
     status: 301,
@@ -42,9 +51,30 @@ function redirect(to: string, request: Request): Response {
   });
 }
 
+async function serveMaintenance(request: Request, env: Env): Promise<Response> {
+  // fetch the maintenance page from the asset layer (extensionless form —
+  // /maintenance.html gets 307'd by html_handling), re-wrap as 503
+  const res = await env.ASSETS.fetch(new Request(new URL("/maintenance", request.url).toString(), request));
+  const body = await res.arrayBuffer();
+  return new Response(body, {
+    status: 503,
+    headers: {
+      "content-type": res.headers.get("content-type") || "text/html; charset=utf-8",
+      "retry-after": "3600",
+      "cache-control": "no-store",
+    },
+  });
+}
+
 export default {
   async fetch(request, env): Promise<Response> {
     const { pathname } = new URL(request.url);
+
+    if (MAINTENANCE_MODE) {
+      const allowed = MAINTENANCE_ALLOWED.some((p) => pathname.startsWith(p));
+      if (!allowed) return serveMaintenance(request, env);
+      return env.ASSETS.fetch(request);
+    }
 
     const mapped = REDIRECTS[pathname];
     if (mapped) return redirect(mapped, request);
