@@ -348,7 +348,7 @@ footer{background:radial-gradient(120% 120% at 0 0,var(--sand) 0%,var(--sand-dee
 .sticky-top .nav{position:static}
 
 /* Complete Plan CTA: gold pulse ring (matches banner dot rhythm) */
-.plan-complete .btn-accent{animation:ctaPulse 1.6s ease-out infinite}
+.plan-complete .btn-accent,.cta-pulse{animation:ctaPulse 1.6s ease-out infinite}
 @keyframes ctaPulse{0%{box-shadow:0 3px 14px rgba(154,111,26,.26),0 0 0 0 rgba(226,168,23,.5)}70%{box-shadow:0 3px 14px rgba(154,111,26,.26),0 0 0 14px rgba(226,168,23,0)}100%{box-shadow:0 3px 14px rgba(154,111,26,.26),0 0 0 0 rgba(226,168,23,0)}}
 
 /* slots badge: pulsing red dot inside the pill */
@@ -369,7 +369,7 @@ footer{background:radial-gradient(120% 120% at 0 0,var(--sand) 0%,var(--sand-dee
 .pricing-dark .slots-badge{border:1px solid rgba(255,255,255,.25)}
 .pricing-dark .plan .btn-primary{background:transparent;border:1px solid rgba(255,255,255,.28);color:#E8EDF2;box-shadow:none}
 .pricing-dark .plan .btn-primary:hover{background:rgba(255,255,255,.08)}
-.pricing-dark .plan .btn-accent{background:#D9AE3A;color:#0E1216;box-shadow:0 3px 14px rgba(0,0,0,.4)}
+.pricing-dark .btn-accent{background:#D9AE3A;color:#0E1216;box-shadow:0 3px 14px rgba(0,0,0,.4)}
 
 /* Samsung Internet paint workaround: promote footer to its own compositing
    layer so its content always paints (reports of footer-cta not rendering). */
