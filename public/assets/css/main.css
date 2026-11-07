@@ -167,7 +167,6 @@ h3{font-size:1.25rem;line-height:1.3;letter-spacing:-.01em;font-weight:600}
 .section-cta{margin-top:56px}
 
 /* ============ PRICING ============ */
-.price-head{max-width:680px;margin:0 auto 64px;text-align:center}
 .price-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
 @media(max-width:1020px){.price-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:640px){.price-grid{grid-template-columns:1fr}}
@@ -354,6 +353,22 @@ footer{background:radial-gradient(120% 120% at 0 0,var(--sand) 0%,var(--sand-dee
 
 /* slots badge: pulsing red dot inside the pill */
 .slots-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#ff4444;margin-right:7px;vertical-align:middle;animation:promoPulse 1.6s ease-out infinite}
+
+/* Dark pricing section: decision + "Berapa investasinya?" + grid on near-black */
+.pricing-dark .plan{background:#161C22;border-color:#2A323C}
+.pricing-dark .plan .for,
+.pricing-dark .plan .price s,
+.pricing-dark .plan-complete .launch-note{color:#A9B2BE}
+.pricing-dark .plan .price s{text-decoration-color:rgba(255,255,255,.45)}
+.pricing-dark .plan ul li{color:#A9B2BE}
+.pricing-dark .plan ul li.key{color:#E8EDF2}
+.pricing-dark .plan ul li.key::before{color:#D9AE3A}
+.pricing-dark .plan-hot{background:#161C22;border-color:#D9AE3A}
+.pricing-dark .plan-hot .hl{color:#D9AE3A}
+.pricing-dark .plan-badge{background:#D9AE3A;color:#0E1216}
+.pricing-dark .slots-badge{border:1px solid rgba(255,255,255,.25)}
+.pricing-dark .plan .btn-primary,
+.pricing-dark .plan .btn-accent{background:#D9AE3A;color:#0E1216;box-shadow:0 3px 14px rgba(0,0,0,.4)}
 
 /* Samsung Internet paint workaround: promote footer to its own compositing
    layer so its content always paints (reports of footer-cta not rendering). */
