@@ -98,6 +98,17 @@ Watch your push go live: Actions tab on GitHub, or `gh run watch`.
 
 ---
 
+## Maintenance mode (when your human asks to take the site down)
+
+```bash
+bash tools/maintenance.sh on    # site shows branded 503 maintenance page
+bash tools/maintenance.sh off   # site back to normal
+```
+
+Verify with: `curl -s -o /dev/null -w '%{http_code}
+' https://spteknik.com`
+(503 = ON, 200 = OFF). Page copy lives in `public/maintenance.html`.
+
 ## Hard rules (violations have caused real incidents)
 
 1. **Never run bare `npx wrangler deploy`.** A wrangler OAuth login on the

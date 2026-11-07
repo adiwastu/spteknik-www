@@ -40,6 +40,19 @@ Plus whatever you changed (curl-grep the section markup, or eyeball desktop+mobi
   `https://api.cloudflare.com/client/v4/zones/2c58de590d7b1d8a96258d01d232695b/workers/routes/{id}`
   for both routes. Traffic returns to Hostinger instantly (its DNS records remain).
 
+## Maintenance mode
+
+```bash
+bash tools/maintenance.sh on    # spteknik.com -> branded 503 maintenance page (~30s)
+bash tools/maintenance.sh off   # back to normal
+```
+
+Pages return HTTP 503 + Retry-After (SEO-safe); `/assets/*`, `/maintenance`,
+`/robots.txt` keep loading. The flag lives in `src/flags.ts` — the script edits,
+commits, and pushes it. Verify after toggling: `curl -s -o /dev/null -w '%{http_code}
+' https://spteknik.com`
+(503 when ON, 200 when OFF). Edit the page copy at `public/maintenance.html`.
+
 ## Hard rules (each one caused a real incident)
 
 1. **NEVER run bare `npx wrangler deploy`.** A wrangler OAuth login on the machine
