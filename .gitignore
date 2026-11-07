@@ -22,3 +22,6 @@ node_modules/
 .wrangler/
 dist/
 dns-snapshot*
+
+# editor/session
+.zcode/
