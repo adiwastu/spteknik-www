@@ -167,6 +167,8 @@ h3{font-size:1.25rem;line-height:1.3;letter-spacing:-.01em;font-weight:600}
 .section-cta{margin-top:56px}
 
 /* ============ PRICING ============ */
+/* centered section-head wrapper (testimoni + "bayangkan bedanya" headings reuse it) */
+.price-head{max-width:680px;margin:0 auto 64px;text-align:center}
 .price-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
 @media(max-width:1020px){.price-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:640px){.price-grid{grid-template-columns:1fr}}
