@@ -360,5 +360,9 @@ footer{background:radial-gradient(120% 120% at 0 0,var(--sand) 0%,var(--sand-dee
 footer{transform:translateZ(0)}
 .footer-grid{transform:translateZ(0)}
 
-/* Complete Plan section: on narrow screens the heading stacks above the mockup */
-@media(max-width:860px){.cp-body{order:-1}}
+/* Complete Plan section: on narrow screens the order is
+   title -> mockup image -> deliverable list */
+@media(max-width:860px){
+  .cp-body{display:contents}
+  .cp-body>h2{order:-1}
+}
