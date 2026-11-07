@@ -1,48 +1,45 @@
 # spteknik-www
 
-Static source for **[spteknik.com](https://spteknik.com)** — plain HTML/CSS/JS served
-by an assets-only Cloudflare Worker (name: `spteknik`). No build step, no CMS,
-no server.
+Static source for **[spteknik.com](https://spteknik.com)** — plain HTML/CSS/JS
+served by a Cloudflare Worker. No build step, no CMS. WordPress was fully
+retired on 2026-11-07 (legacy `/wp-*` URLs still 301 via `src/index.ts`).
 
-## Pipeline: push = live
+## Push = live
 
-**GitHub Actions deploys on every push to `main`** (`.github/workflows/deploy.yml`,
-using `cloudflare/wrangler-action@v4`). The repo is the single source of truth:
+GitHub Actions deploys on every push to `main`
+(`.github/workflows/deploy.yml`, `cloudflare/wrangler-action@v4`):
 
 ```bash
 git pull                 # always start current
-# edit files in public/  # what's on main is what's live
-git commit -m "..." && git push   # live worldwide in ~30 seconds
+# edit files in public/
+git commit -am "..." && git push   # live worldwide in ~30 seconds
 ```
 
-Rules that keep two people from fighting:
+## Onboarding (agents & humans)
 
-1. **Never deploy locally unless CI is broken.** If you deploy with
-   `tools/deploy.sh` (emergency only), commit + push the exact files you deployed
-   immediately after — an un-pushed local deploy is how work gets wiped.
-2. **Pull before you edit.** Deployments are atomic per push; conflicts happen
-   only in git, where they're visible and fixable.
-3. Never edit DNS records on the zone; never delete the `spteknik` worker.
-   DNS is the emergency rollback path to the old host.
+👉 **[ONBOARDING.md](ONBOARDING.md)** — a checklist your AI agent can execute
+end-to-end: prerequisites, clone, git identity (correct commit author), skill
+install, verification, and the working rules. Point your agent at it.
 
-## Local tooling (backup path)
+## Emergency local deploy
 
-Requires Node 18+ and a `creds.env` (not committed) with `CLOUDFLARE_API_TOKEN` +
-`CLOUDFLARE_ACCOUNT_ID`. The token lives in GitHub repo secrets for CI; the same
-token can be pasted locally for the emergency path.
+Only when CI is down: requires `creds.env` (not committed) with
+`CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID`, then `bash tools/deploy.sh`
+(sidelines any wrangler OAuth so it can't hijack the deploy to another account).
+**Commit + push the exact deployed bytes immediately after** — the repo is the
+source of truth.
 
-| Script | What it does |
+| Tool | Purpose |
 |---|---|
-| `tools/deploy.sh` | Local deploy. Sidelines any wrangler OAuth login first (OAuth would otherwise hijack the deploy to the wrong account). **Emergency/CI-down path only** — normal flow is `git push`. |
-| `tools/sync-from-live.sh` | Mirror the live site into `public/` (disaster recovery / fresh bootstrap). |
-| `tools/set-slots.sh <n>` | Update the Complete Plan slot counter and deploy. |
-| `tools/crawl.mjs` | Static mirror crawler used by sync. |
+| `tools/deploy.sh` | Emergency local deploy |
+| `tools/sync-from-live.sh` | Disaster recovery: mirror live site → `public/` |
+| `tools/set-slots.sh <n>` | Complete Plan slot counter → deploy |
+| `tools/crawl.mjs` | Mirror crawler (used by sync) |
+| `tools/de-wp.py` | One-shot WP-purge transform (historical, already applied) |
 
-## Notes
+## Rules
 
-- `public/index.html` is the homepage. Sections: `#home`, `#masalah`, `#payout`,
-  `#payment` (pricing), `#cerita`, `#faq`.
-- WordPress-style asset paths (`/wp-content/...`) are preserved on purpose for
-  SEO and old links.
-- Complete Plan slot counter: pill in the pricing card — edit `public/index.html`
-  (search `slots-badge`), commit, push. The top banner badge is static copy.
+1. Never bare `npx wrangler deploy` (OAuth hijack risk) — push, or `tools/deploy.sh`.
+2. Commit as the human you act for — never inherited identities.
+3. Never touch DNS on the zone; it's the rollback path.
+4. `creds.env` never gets committed.

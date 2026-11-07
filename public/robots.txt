@@ -1,5 +1,4 @@
 User-agent: *
-Disallow: /wp-admin/
-Allow: /wp-admin/admin-ajax.php
+Allow: /
 
-Sitemap: https://spteknik.com/wp-sitemap.xml
+Sitemap: https://spteknik.com/sitemap.xml

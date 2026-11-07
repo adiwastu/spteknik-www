@@ -25,3 +25,4 @@ dns-snapshot*
 
 # editor/session
 .zcode/
+handoff/
