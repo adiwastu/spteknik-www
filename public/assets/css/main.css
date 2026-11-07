@@ -368,7 +368,8 @@ footer{background:radial-gradient(120% 120% at 0 0,var(--sand) 0%,var(--sand-dee
 .pricing-dark .plan-hot .hl{color:#D9AE3A}
 .pricing-dark .plan-badge{background:#D9AE3A;color:#0E1216}
 .pricing-dark .slots-badge{border:1px solid rgba(255,255,255,.25)}
-.pricing-dark .plan .btn-primary,
+.pricing-dark .plan .btn-primary{background:transparent;border:1px solid rgba(255,255,255,.28);color:#E8EDF2;box-shadow:none}
+.pricing-dark .plan .btn-primary:hover{background:rgba(255,255,255,.08)}
 .pricing-dark .plan .btn-accent{background:#D9AE3A;color:#0E1216;box-shadow:0 3px 14px rgba(0,0,0,.4)}
 
 /* Samsung Internet paint workaround: promote footer to its own compositing
