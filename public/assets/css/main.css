@@ -432,7 +432,7 @@ footer{transform:translateZ(0)}
 
 /* --- wizard (step-by-step reveal) --- */
 .lf-progress{display:flex;flex-direction:column;gap:8px;margin-bottom:4px}
-.lf-progress-label{font-family:'Fragment Mono',ui-monospace,monospace;font-size:.64rem;text-transform:uppercase;letter-spacing:.12em;color:#7A5C0A}
+.lf-progress-label{font-family:'Fragment Mono',ui-monospace,monospace;font-size:.64rem;text-transform:uppercase;letter-spacing:.12em;color:#444B55}
 .lf-bar{height:6px;background:#EFE9DE;border-radius:999px;overflow:hidden}
 .lf-bar-fill{height:100%;width:25%;background:var(--accent);border-radius:999px;transition:width .3s ease}
 .lf-panels{position:relative}
@@ -444,12 +444,10 @@ footer{transform:translateZ(0)}
 @keyframes lfInBack{from{opacity:0;transform:translateX(-26px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion: reduce){.lf-panel.anim-fwd,.lf-panel.anim-back{animation:none}}
 .lf-back{
-  align-self:flex-start;background:none;border:none;cursor:pointer;padding:0;
-  font-family:'Fragment Mono',ui-monospace,monospace;font-size:.66rem;
-  text-transform:uppercase;letter-spacing:.12em;color:#555D69;
+  background:transparent;border:1px solid var(--line-strong);color:var(--ink);
+  padding:13px 30px;font-size:.9rem;
 }
-.lf-back em{font-style:normal}
-.lf-back:hover{color:var(--ink)}
+.lf-back:hover{background:rgba(0,0,0,.05)}
 .lf-panel .lf-hint{margin-bottom:-8px}
 
 /* --- wizard v2: circle question numbers, A-D option letters, explicit next --- */

@@ -301,8 +301,16 @@ async function handleLead(request: Request, env: Env): Promise<Response> {
 
   const pick = (key: "q1" | "q2" | "q3") => {
     const choices = LEAD_CHOICES[key];
-    const v = typeof body[key] === "string" ? (body[key] as string) : "";
-    return choices[v] ?? null;
+    const v = body[key];
+    const list = Array.isArray(v) ? v : typeof v === "string" ? [v] : [];
+    const labels: string[] = [];
+    for (const item of list) {
+      if (typeof item !== "string") return null;
+      const label = choices[item];
+      if (!label) return null;
+      if (!labels.includes(label)) labels.push(label);
+    }
+    return labels.length ? labels.join("; ") : null;
   };
   const q1 = pick("q1");
   const q2 = pick("q2");
