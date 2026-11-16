@@ -429,3 +429,25 @@ footer{transform:translateZ(0)}
 .lf-done h3{font-size:1.3rem;margin-bottom:10px}
 .lf-done p{font-size:.95rem;color:#444B55;line-height:1.6}
 @media(max-width:560px){.leadform-card{padding:26px 18px}}
+
+/* --- wizard (step-by-step reveal) --- */
+.lf-progress{display:flex;flex-direction:column;gap:8px;margin-bottom:4px}
+.lf-progress-label{font-family:'Fragment Mono',ui-monospace,monospace;font-size:.64rem;text-transform:uppercase;letter-spacing:.12em;color:#7A5C0A}
+.lf-bar{height:6px;background:#EFE9DE;border-radius:999px;overflow:hidden}
+.lf-bar-fill{height:100%;width:25%;background:var(--accent);border-radius:999px;transition:width .3s ease}
+.lf-panels{position:relative}
+.lf-panel{display:none;flex-direction:column;gap:30px}
+.lf-panel.is-active{display:flex}
+.lf-panel.anim-fwd{animation:lfIn .28s ease}
+.lf-panel.anim-back{animation:lfInBack .28s ease}
+@keyframes lfIn{from{opacity:0;transform:translateX(26px)}to{opacity:1;transform:none}}
+@keyframes lfInBack{from{opacity:0;transform:translateX(-26px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){.lf-panel.anim-fwd,.lf-panel.anim-back{animation:none}}
+.lf-back{
+  align-self:flex-start;background:none;border:none;cursor:pointer;padding:0;
+  font-family:'Fragment Mono',ui-monospace,monospace;font-size:.66rem;
+  text-transform:uppercase;letter-spacing:.12em;color:#555D69;
+}
+.lf-back em{font-style:normal}
+.lf-back:hover{color:var(--ink)}
+.lf-panel .lf-hint{margin-bottom:-8px}
