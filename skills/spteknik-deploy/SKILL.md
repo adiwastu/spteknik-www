@@ -75,7 +75,7 @@ commits, and pushes it. Verify after toggling: `curl -s -o /dev/null -w '%{http_
 |---|---|
 | `public/index.html` | The homepage (whole site) |
 | `public/assets/{img,css,icons,js/vendor}` | Images, main.css, favicons, jquery + scroll-top |
-| `src/index.ts` | Worker: legacy 301 map + assets serving |
+| `src/index.ts` | Worker: legacy 301 map + assets serving + `/api/lead` + analytics dashboard |
 | `tools/deploy.sh` | Emergency local deploy (OAuth-safe) |
 | `tools/sync-from-live.sh` | Disaster recovery: mirror live → public/ |
 | `tools/set-slots.sh <n>` | Update Complete Plan slot counter + deploy (also: edit `slots-badge` in HTML manually) |
@@ -92,3 +92,18 @@ commits, and pushes it. Verify after toggling: `curl -s -o /dev/null -w '%{http_
 - Sections: `#home`, `#masalah`, `#payout`, `#payment` (pricing), `#cerita`, `#faq`.
 - WordPress was fully purged (2026-11-07): WP-style paths, meta, emoji scripts,
   generator tags are gone. Don't reintroduce WP patterns.
+
+## Lead form & WhatsApp (do not break)
+
+- `#lead-form` (wizard, above FAQ) POSTs to worker route `/api/lead` (`src/index.ts`).
+  On submit the worker calls WAHA (WhatsApp API on the sable-mill-3 VPS) through the
+  Cloudflare tunnel `wahatunnel.spteknik.com`: lead gets a confirmation message, and
+  Raven (LEAD_ALERT_TO secret) gets a lead brief.
+- Worker secrets (set via `wrangler secret put`, survive deploys): `ANALYTICS_TOKEN`,
+  `WAHA_URL`, `WAHA_API_KEY`, `LEAD_ALERT_TO`. Never commit them.
+- The tunnel is named `spteknik-waha` (Cloudflare account) and runs as the
+  `cloudflared` systemd service on the VPS. WAHA itself stays loopback-only.
+- `analytics.spteknik.com` is a private dashboard served by this worker
+  (noindex + disallow-all robots.txt). Its data needs the `ANALYTICS_TOKEN` secret
+  to have Zone Analytics: Read.
+- Changing WAHA session/number, tunnel hostname, or VPS breaks the form — flag it to Adi first.
