@@ -108,12 +108,13 @@ commits, and pushes it. Verify after toggling: `curl -s -o /dev/null -w '%{http_
   to have Zone Analytics: Read.
 - Changing WAHA session/number, tunnel hostname, or VPS breaks the form — flag it to Adi first.
 - Form lead flow: worker sends TAHAP 1 greeting (Raven persona + Free Trading Journal link
-  , a 302 to the Notion template) immediately, then POSTs the
-  lead context to the chat bot (spteknik-waha-bot on the VPS) at 
-  (secret FORM_INGEST_KEY both sides). The bot continues the sales playbook (TAHAP 2/3) with the
-  form answers in context; Raven still approves AI drafts.
-- Tunnel ingress is PATH-ROUTED:  -> WAHA :3000,
-   -> bot :8080, everything else 404. Do not expose  through the tunnel.
-- The bot's  is Raven's sales law for form leads;  is the
-  single source of prices/links. Real conversations flow there — check  pending/
-  queue before restarting the bot service.
+  `spteknik.com/freetradingjournal`, a 302 to the Notion template) immediately, then POSTs the
+  lead context to the chat bot (spteknik-waha-bot on the VPS) at
+  `wahatunnel.spteknik.com/internal/lead` (secret FORM_INGEST_KEY both sides). The bot
+  continues the sales playbook (TAHAP 2/3) with the form answers in context; Raven still
+  approves AI drafts.
+- Tunnel ingress is PATH-ROUTED: `wahatunnel.spteknik.com/api/*` -> WAHA :3000,
+  `/internal/lead` -> bot :8080, everything else 404. Do not expose `/webhook` through the tunnel.
+- The bot's `context/playbook-form.md` is Raven's sales law for form leads; its `context/paket.json`
+  is the single source of prices/links. Real conversations flow in the bot's `data/state.json` —
+  check pending/queue before restarting the bot service.
