@@ -242,7 +242,7 @@ const LEAD_CHOICES: Record<string, Record<string, string>> = {
     "emosi-fomo": "Analisis sering benar, tapi emosi & FOMO merusak trading plan",
   },
   q3: {
-    "rule-jelas": "Punya rule entry yang jelas & tenang saat masuk pasar",
+    "rule-jelas": "Punya strategi yang konsisten, dapat diduplikasi, dan tenang saat entry pasar",
     "rm-aman": "Punya Risk Management yang aman agar modal terproteksi dari MC",
     "propfirm-funded": "Lolos evaluasi Prop Firm & dapat akun funded",
   },
