@@ -432,9 +432,9 @@ footer{transform:translateZ(0)}
 
 /* --- wizard (step-by-step reveal) --- */
 .lf-progress{display:flex;flex-direction:column;gap:8px;margin-bottom:4px}
-.lf-progress-label{font-family:'Fragment Mono',ui-monospace,monospace;font-size:.64rem;text-transform:uppercase;letter-spacing:.12em;color:#444B55}
+.lf-progress-label{font-family:'Fragment Mono',ui-monospace,monospace;font-size:.64rem;text-transform:uppercase;letter-spacing:.12em;color:var(--ink)}
 .lf-bar{height:6px;background:#EFE9DE;border-radius:999px;overflow:hidden}
-.lf-bar-fill{height:100%;width:25%;background:#444B55;border-radius:999px;transition:width .3s ease}
+.lf-bar-fill{height:100%;width:25%;background:var(--ink);border-radius:999px;transition:width .3s ease}
 .lf-panels{position:relative}
 .lf-panel{display:none;flex-direction:column;gap:30px}
 .lf-panel.is-active{display:flex}
@@ -472,3 +472,4 @@ footer{transform:translateZ(0)}
 .lf-q.shake{animation:lfShake .32s ease}
 @keyframes lfShake{20%{transform:translateX(-6px)}45%{transform:translateX(5px)}70%{transform:translateX(-3px)}90%{transform:translateX(2px)}}
 @media (prefers-reduced-motion: reduce){.lf-q.shake{animation:none}}
+.lf-multi{font-weight:400;font-size:.82em;color:rgba(0,0,0,.5)}
