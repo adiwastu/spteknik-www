@@ -467,6 +467,11 @@ src="https://www.facebook.com/tr?id=2015711322628650&ev=PageView&noscript=1"
     b.addEventListener('click', function () { show(i, -1); });
   });
 
+  // Q1 auto-advance: picking an experience level slides straight to Q2
+  form.querySelector('.lf-panel[data-step="0"]').addEventListener('change', function (e) {
+    if (e.target.name === 'q1') setTimeout(function () { show(1, 1); }, 250);
+  });
+
   function fail(msg) {
     err.textContent = msg;
     err.hidden = false;
