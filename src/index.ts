@@ -224,7 +224,7 @@ async function serveAnalyticsSite(request: Request, env: Env): Promise<Response>
 }
 
 // ---------------- lead form (/api/lead) ----------------
-// The "Klaim Free Trading Journal" form. Worker validates the submission,
+// The lead form ("Temukan Solusi Trading Kamu"). Worker validates the submission,
 // then WAHA (on the VPS, reached through the cloudflared tunnel) sends a
 // WhatsApp confirmation to the lead and a briefing to the team (LEAD_ALERT_TO).
 
@@ -324,7 +324,7 @@ async function handleLead(request: Request, env: Env): Promise<Response> {
 
   const leadText =
     `Halo ${name}! 🎁\n\n` +
-    `Terima kasih sudah mengisi form di spteknik.com. Free Trading Journal kamu sedang disiapkan — ` +
+    `Terima kasih sudah mengisi form di spteknik.com. ` +
     `tim SPTeknik akan menghubungi kamu lewat WhatsApp ini untuk membahas kendala trading kamu dan memberi rekomendasi bimbingan yang tepat.\n\n` +
     `Ringkasan jawaban kamu:\n${summary}\n\n` +
     `Sampai jumpa di chat berikutnya! 🙌\n— Tim SPTeknik`;
@@ -338,7 +338,7 @@ async function handleLead(request: Request, env: Env): Promise<Response> {
     const alert =
       `🎯 LEAD BARU (form spteknik.com)\n\n` +
       `Nama: ${name}\nWA: +${phone}\n\n${summary}\n\n` +
-      `Hubungi dia di nomor di atas — journal sudah dikirim otomatis ke chat-nya.`;
+      `Hubungi dia di nomor di atas untuk membahas solusinya.`;
     await wahaSendText(env, env.LEAD_ALERT_TO, alert); // best-effort; don't fail the request
   }
 
