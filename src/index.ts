@@ -253,7 +253,7 @@ function normalizeWaNumber(raw: unknown): string | null {
   if (typeof raw !== "string") return null;
   let d = raw.replace(/\D/g, "");
   if (d.startsWith("0")) d = "62" + d.slice(1);
-  if (!/^62\d{7,12}$/.test(d)) return null;
+  if (!/^62\d{9,12}$/.test(d)) return null;
   return d;
 }
 

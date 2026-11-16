@@ -506,7 +506,7 @@ src="https://www.facebook.com/tr?id=2015711322628650&ev=PageView&noscript=1"
     }).then(function (r) { return r.json(); }).then(function (res) {
       if (res && res.ok) {
         form.innerHTML = '<div class="lf-done"><div class="lf-done-emoji">\uD83C\uDF89</div><h3>Diterima, ' + payload.name.replace(/[<>&]/g, '') + '!</h3>' +
-          '<p>Free Trading Journal sedang dikirim ke WhatsApp kamu (<strong>+' + String(payload.phone).replace(/\D/g, '') + '</strong>). ' +
+          '<p>Free Trading Journal sedang dikirim ke WhatsApp kamu (<strong>' + (function(d){ d = d.replace(/\D/g,''); return d.charAt(0) === '0' ? '+' + '62' + d.slice(1) : '+' + d; })(String(payload.phone)) + '</strong>). ' +
           'Cek chat-nya sebentar lagi \u2014 tim SPTeknik akan menyapa kamu di sana untuk membahas solusi terbaik buat kamu.</p></div>';
         document.getElementById('lead-form').scrollIntoView({ behavior: 'instant', block: 'center' });
       } else {
