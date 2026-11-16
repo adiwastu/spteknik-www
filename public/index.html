@@ -400,14 +400,15 @@ src="https://www.facebook.com/tr?id=2015711322628650&ev=PageView&noscript=1"
           </div>
           <label class="lf-consent">
             <input type="checkbox" name="consent" value="yes" checked required>
+            <span class="lf-cbox" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span>
             <span>Ya, kirimkan Free Trading Journal ke WhatsApp saya dan hubungi saya untuk membahas solusi kendala trading serta rekomendasi bimbingan yang tepat.</span>
           </label>
           <p class="lf-error" id="lfError" hidden></p>
           <button type="submit" class="btn btn-accent btn-lg cta-pulse lf-submit">KLAIM FREE JOURNAL &amp; BAHAS SOLUSI VIA WHATSAPP</button>
           <div class="lf-trust">
-            <div>🎁 <strong>Akses Otomatis:</strong> Free Trading Journal &amp; Risk Calculator dikirim langsung via WA</div>
-            <div>🔒 <strong>Bebas Spam:</strong> Data kamu 100% aman dan hanya digunakan untuk pembahasan konsultasi</div>
-            <div>⚡ <strong>Slot Terbatas:</strong> Kuota bimbingan langsung Pak Svendpri batch minggu ini tersisa <strong>5 kuota</strong></div>
+            <div><strong>Akses Otomatis:</strong> Free Trading Journal dikirim langsung via WA</div>
+            <div><strong>Bebas Spam:</strong> Data kamu 100% aman dan hanya digunakan untuk pembahasan konsultasi</div>
+            <div><strong>Slot Terbatas:</strong> Kuota bimbingan langsung Pak Svendpri batch minggu ini tersisa <strong>5 kuota</strong></div>
           </div>
           <div class="lf-actions"><button type="button" class="btn lf-back">&larr; Kembali</button></div>
         </div>
@@ -501,7 +502,7 @@ src="https://www.facebook.com/tr?id=2015711322628650&ev=PageView&noscript=1"
     }).then(function (r) { return r.json(); }).then(function (res) {
       if (res && res.ok) {
         form.innerHTML = '<div class="lf-done"><div class="lf-done-emoji">\uD83C\uDF89</div><h3>Diterima, ' + payload.name.replace(/[<>&]/g, '') + '!</h3>' +
-          '<p>Free Trading Journal &amp; Risk Calculator sedang dikirim ke WhatsApp kamu (<strong>+' + String(payload.phone).replace(/\D/g, '') + '</strong>). ' +
+          '<p>Free Trading Journal sedang dikirim ke WhatsApp kamu (<strong>+' + String(payload.phone).replace(/\D/g, '') + '</strong>). ' +
           'Cek chat-nya sebentar lagi \u2014 tim SPTeknik akan menyapa kamu di sana untuk membahas solusi terbaik buat kamu.</p></div>';
         document.getElementById('lead-form').scrollIntoView({ behavior: 'instant', block: 'center' });
       } else {
