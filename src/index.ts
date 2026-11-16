@@ -20,6 +20,8 @@ interface Env {
   WAHA_URL?: string;
   WAHA_API_KEY?: string;
   LEAD_ALERT_TO?: string;
+  // shared secret for POST <WAHA_URL>/internal/lead (spteknik-waha-bot ingest)
+  FORM_INGEST_KEY?: string;
 }
 
 // explicit old → new map (files that existed under WordPress paths)
@@ -67,6 +69,8 @@ function redirect(to: string, request: Request): Response {
 // stay away. Traffic numbers come from the Cloudflare GraphQL API using the
 // ANALYTICS_TOKEN worker secret (never stored in the repo).
 const ANALYTICS_HOST = "analytics.spteknik.com";
+const NOTION_JOURNAL_URL =
+  "https://debonair-roundworm-e65.notion.site/SPTeknik-Trading-Journal-418c59028a7d8153b762d0ddc50aa726";
 const ZONE_ID = "2c58de590d7b1d8a96258d01d232695b";
 
 const NOINDEX_HEADERS: Record<string, string> = {
@@ -322,16 +326,36 @@ async function handleLead(request: Request, env: Env): Promise<Response> {
 
   const summary = `1. Pengalaman: ${q1}\n2. Kendala utama: ${q2}\n3. Target 30 hari: ${q3}`;
 
+  // TAHAP 1 of the sales playbook (sent immediately, templated - no AI, no approval):
+  // greeting as Raven + free journal link + form recap + reflective question.
+  // The chat bot (spteknik-waha-bot) continues from TAHAP 2 when the lead replies.
+  const first = name.split(/\s+/)[0];
   const leadText =
-    `Halo ${name}! 🎁\n\n` +
-    `Terima kasih sudah mengisi form di spteknik.com. ` +
-    `tim SPTeknik akan menghubungi kamu lewat WhatsApp ini untuk membahas kendala trading kamu dan memberi rekomendasi bimbingan yang tepat.\n\n` +
-    `Ringkasan jawaban kamu:\n${summary}\n\n` +
-    `Sampai jumpa di chat berikutnya! 🙌\n— Tim SPTeknik`;
+    `Halo ${first}! 👋 Aku Raven, Admin dari SPTeknik.\n\n` +
+    `Terima kasih ya sudah isi form konsultasi tadi! Sebelum kita bahas lebih lanjut, ` +
+    `ini aku kasih akses Free Trading Journal SPTeknik khusus buat kamu:\n` +
+    `🔗 https://spteknik.com/freetradingjournal\n\n` +
+    `Oiya ${first}, aku baca di form: pengalaman trading kamu ${q1}, dan kendala utamanya ${q2}.\n` +
+    `Biar aku nggak salah ngasih saran nanti, kira-kira kenapa menurut kamu kendala itu masih terus terjadi?\n\n` +
+    `Salam,\nTim SPTeknik`;
 
   const sentToLead = await wahaSendText(env, phone, leadText);
   if (!sentToLead) {
     return jsonOk({ ok: false, error: "gagal mengirim ke WhatsApp — coba lagi sebentar." }, 502);
+  }
+
+  // Push the form context to the chat bot (through the tunnel) so its AI replies
+  // continue the playbook from TAHAP 2 with the lead's answers in context.
+  if (env.FORM_INGEST_KEY) {
+    try {
+      await fetch(new URL(env.WAHA_URL).origin + "/internal/lead", {
+        method: "POST",
+        headers: { "x-ingest-key": env.FORM_INGEST_KEY, "content-type": "application/json" },
+        body: JSON.stringify({ name, phone, q1, q2, q3 }),
+      });
+    } catch {
+      // best-effort: the bot can still converse without form context
+    }
   }
 
   if (env.LEAD_ALERT_TO) {
@@ -376,6 +400,14 @@ export default {
     // lead form endpoint (public/index.html #lead-form)
     if (pathname === "/api/lead" && request.method === "POST") {
       return handleLead(request, env);
+    }
+
+    // Free Trading Journal (Notion template) — 302 so the target can change freely
+    if (pathname === "/freetradingjournal") {
+      return new Response(null, {
+        status: 302,
+        headers: { location: NOTION_JOURNAL_URL, "cache-control": "no-store" },
+      });
     }
 
     const mapped = REDIRECTS[pathname];
