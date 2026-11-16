@@ -385,7 +385,7 @@ footer{transform:translateZ(0)}
 
 /* ============ LEAD FORM (klaim free journal) ============ */
 .leadform-card{
-  max-width:640px;margin:0 auto;background:#fff;
+  max-width:640px;margin:0 auto;background:#fff;color:var(--ink);
   border:1px solid #DDD5C3;border-radius:20px;padding:36px 32px;
   display:flex;flex-direction:column;gap:30px;position:relative;
 }
