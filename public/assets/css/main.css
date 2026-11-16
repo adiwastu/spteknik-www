@@ -473,3 +473,13 @@ footer{transform:translateZ(0)}
 @keyframes lfShake{20%{transform:translateX(-6px)}45%{transform:translateX(5px)}70%{transform:translateX(-3px)}90%{transform:translateX(2px)}}
 @media (prefers-reduced-motion: reduce){.lf-q.shake{animation:none}}
 .lf-multi{font-weight:400;font-size:.82em;color:rgba(0,0,0,.5)}
+
+/* --- multiselect options: check circle instead of letters --- */
+.lf-check{
+  flex:0 0 26px;width:26px;height:26px;border-radius:999px;margin-top:2px;
+  background:#F1EFEA;display:inline-flex;align-items:center;justify-content:center;
+  transition:background .15s ease;
+}
+.lf-check svg{opacity:0;transition:opacity .15s ease}
+.lf-opt:has(input:checked) .lf-check{background:var(--ink)}
+.lf-opt:has(input:checked) .lf-check svg{opacity:1}
