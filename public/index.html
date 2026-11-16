@@ -339,6 +339,117 @@ src="https://www.facebook.com/tr?id=2015711322628650&ev=PageView&noscript=1"
   </div>
 </section>
 
+<!-- ================= LEAD FORM (klaim free journal) ================= -->
+<section id="lead-form" class="leadform" style="background:#ECE6D8;padding:80px 0 72px">
+  <div class="wrap">
+    <div class="price-head" style="margin-bottom:40px">
+      <h2>Temukan Solusi Trading Kamu &amp; Klaim Free Trading Journal 🎁</h2>
+      <p class="lead" style="margin-top:16px">Isi 3 pertanyaan singkat di bawah ini (kurang dari 30 detik) agar tim SPTeknik bisa memberikan rekomendasi bimbingan yang tepat serta mengirimkan template Trading Journal gratis langsung ke WhatsApp kamu.</p>
+    </div>
+    <form id="leadForm" class="leadform-card" novalidate>
+      <input type="text" name="website" value="" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;height:0;width:0;opacity:0">
+
+      <p class="lf-hint">💡 Pilih jawaban yang paling menggambarkan kondisi trading kamu saat ini agar pembahasan solusi berjalan efektif.</p>
+
+      <fieldset class="lf-q">
+        <legend><span class="lf-step">Pertanyaan 1/3 &middot; Pengalaman Trading</span>Sudah berapa lama kamu mengenal atau melakukan trading?</legend>
+        <label class="lf-opt"><input type="radio" name="q1" value="pemula" required><span>🟢 Pemula <em>(kurang dari 6 bulan / baru belajar)</em></span></label>
+        <label class="lf-opt"><input type="radio" name="q1" value="menengah"><span>🟡 Menengah <em>(6 bulan &ndash; 2 tahun)</em></span></label>
+        <label class="lf-opt"><input type="radio" name="q1" value="senior"><span>🔵 Senior <em>(lebih dari 2 tahun)</em></span></label>
+      </fieldset>
+
+      <fieldset class="lf-q">
+        <legend><span class="lf-step">Pertanyaan 2/3 &middot; Kendala Utama</span>Apa masalah terbesar yang paling sering bikin kamu frustrasi saat trading saat ini?</legend>
+        <label class="lf-opt"><input type="radio" name="q2" value="entry-tp-sl" required><span>❌ Bingung menentukan titik Entry, Take Profit (TP), &amp; Stop Loss (SL) yang presisi</span></label>
+        <label class="lf-opt"><input type="radio" name="q2" value="floating-mc"><span>🔻 Sering ketarik floating minus besar hingga akun berakhir Margin Call (MC)</span></label>
+        <label class="lf-opt"><input type="radio" name="q2" value="propfirm-gagal"><span>💔 Sering gagal evaluasi Prop Firm / bingung lolos kualifikasi</span></label>
+        <label class="lf-opt"><input type="radio" name="q2" value="emosi-fomo"><span>🧠 Analisis sering benar, tapi emosi &amp; FOMO sering merusak trading plan</span></label>
+      </fieldset>
+
+      <fieldset class="lf-q">
+        <legend><span class="lf-step">Pertanyaan 3/3 &middot; Target Solusi</span>Apa target utama yang paling ingin kamu capai dalam 30 hari ke depan?</legend>
+        <label class="lf-opt"><input type="radio" name="q3" value="rule-jelas" required><span>🎯 Saya ingin punya rule indikator yang jelas &amp; tenang saat mau entry pasar</span></label>
+        <label class="lf-opt"><input type="radio" name="q3" value="rm-aman"><span>🛡️ Saya ingin memiliki Risk Management yang aman agar modal terproteksi dari MC</span></label>
+        <label class="lf-opt"><input type="radio" name="q3" value="propfirm-funded"><span>🏆 Saya fokus ingin lolos evaluasi Prop Firm &amp; dapet akun funded</span></label>
+      </fieldset>
+
+      <div class="lf-contact">
+        <div class="lf-field">
+          <label for="lf-name">Nama kamu</label>
+          <input id="lf-name" type="text" name="name" maxlength="40" placeholder="Contoh: Budi" autocomplete="name" required>
+        </div>
+        <div class="lf-field">
+          <label for="lf-phone">Nomor WhatsApp kamu</label>
+          <input id="lf-phone" type="tel" name="phone" inputmode="tel" placeholder="08xxxxxxxxxx atau 62xxxxxxxxxx" autocomplete="tel" required>
+        </div>
+      </div>
+
+      <label class="lf-consent">
+        <input type="checkbox" name="consent" value="yes" checked required>
+        <span>Ya, kirimkan Free Trading Journal ke WhatsApp saya dan hubungi saya untuk membahas solusi kendala trading serta rekomendasi bimbingan yang tepat.</span>
+      </label>
+
+      <p class="lf-error" id="lfError" hidden></p>
+
+      <button type="submit" class="btn btn-accent btn-lg cta-pulse lf-submit">KLAIM FREE JOURNAL &amp; BAHAS SOLUSI VIA WHATSAPP</button>
+
+      <div class="lf-trust">
+        <div>🎁 <strong>Akses Otomatis:</strong> Free Trading Journal &amp; Risk Calculator dikirim langsung via WA</div>
+        <div>🔒 <strong>Bebas Spam:</strong> Data kamu 100% aman dan hanya digunakan untuk pembahasan konsultasi</div>
+        <div>⚡ <strong>Slot Terbatas:</strong> Kuota bimbingan langsung Pak Svendpri batch minggu ini tersisa <strong>5 kuota</strong></div>
+      </div>
+    </form>
+  </div>
+</section>
+
+<script>
+(function () {
+  var form = document.getElementById('leadForm');
+  if (!form) return;
+  var btn = form.querySelector('.lf-submit');
+  var err = document.getElementById('lfError');
+
+  function fail(msg) {
+    err.textContent = msg;
+    err.hidden = false;
+    btn.disabled = false;
+    btn.textContent = 'KLAIM FREE JOURNAL & BAHAS SOLUSI VIA WHATSAPP';
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    err.hidden = true;
+    var data = new FormData(form);
+    var payload = {
+      name: (data.get('name') || '').trim(),
+      phone: data.get('phone'),
+      q1: data.get('q1'), q2: data.get('q2'), q3: data.get('q3'),
+      consent: data.get('consent') === 'yes',
+      website: data.get('website') || ''
+    };
+    if (!payload.name || !payload.phone || !payload.q1 || !payload.q2 || !payload.q3 || !payload.consent) {
+      fail('Lengkapi semua pertanyaan, nama, nomor WhatsApp, dan centang persetujuan ya.');
+      return;
+    }
+    btn.disabled = true;
+    btn.textContent = 'MENGIRIM KE WHATSAPP KAMU…';
+    fetch('/api/lead', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(function (r) { return r.json(); }).then(function (res) {
+      if (res && res.ok) {
+        form.innerHTML = '<div class="lf-done"><div class="lf-done-emoji">🎉</div><h3>Diterima, ' + payload.name.replace(/[<>&]/g, '') + '!</h3>' +
+          '<p>Free Trading Journal &amp; Risk Calculator sedang dikirim ke WhatsApp kamu (<strong>+' + String(payload.phone).replace(/\D/g, '') + '</strong>). ' +
+          'Cek chat-nya sebentar lagi — tim SPTeknik akan menyapa kamu di sana untuk membahas solusi terbaik buat kamu.</p></div>';
+      } else {
+        fail((res && res.error) || 'Ada kendala saat mengirim — coba lagi sebentar.');
+      }
+    }).catch(function () { fail('Koneksi bermasalah — periksa internet kamu dan coba lagi.'); });
+  });
+})();
+</script>
+
 <!-- ================= FAQ ================= -->
 <section id="faq">
   <div class="wrap">

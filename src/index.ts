@@ -13,6 +13,13 @@ interface Env {
   // worker secret (wrangler secret put ANALYTICS_TOKEN): a Cloudflare API token
   // with Zone Analytics read, used by the analytics dashboard to query GraphQL.
   ANALYTICS_TOKEN?: string;
+  // worker secrets for the lead form (public/index.html #lead-form):
+  //   WAHA_URL      — tunnel origin of the WAHA instance (https://wahatunnel.spteknik.com)
+  //   WAHA_API_KEY  — WAHA X-Api-Key
+  //   LEAD_ALERT_TO — WhatsApp number (62…) that gets notified of each new lead (Raven)
+  WAHA_URL?: string;
+  WAHA_API_KEY?: string;
+  LEAD_ALERT_TO?: string;
 }
 
 // explicit old → new map (files that existed under WordPress paths)
@@ -216,6 +223,120 @@ async function serveAnalyticsSite(request: Request, env: Env): Promise<Response>
   });
 }
 
+// ---------------- lead form (/api/lead) ----------------
+// The "Klaim Free Trading Journal" form. Worker validates the submission,
+// then WAHA (on the VPS, reached through the cloudflared tunnel) sends a
+// WhatsApp confirmation to the lead and a briefing to the team (LEAD_ALERT_TO).
+
+// form value -> human label for the WhatsApp message
+const LEAD_CHOICES: Record<string, Record<string, string>> = {
+  q1: {
+    pemula: "Pemula (kurang dari 6 bulan / baru belajar)",
+    menengah: "Menengah (6 bulan - 2 tahun)",
+    senior: "Senior (lebih dari 2 tahun)",
+  },
+  q2: {
+    "entry-tp-sl": "Bingung menentukan titik Entry, TP & SL yang presisi",
+    "floating-mc": "Sering kena floating minus besar hingga Margin Call (MC)",
+    "propfirm-gagal": "Sering gagal evaluasi Prop Firm / bingung lolos kualifikasi",
+    "emosi-fomo": "Analisis sering benar, tapi emosi & FOMO merusak trading plan",
+  },
+  q3: {
+    "rule-jelas": "Punya rule entry yang jelas & tenang saat masuk pasar",
+    "rm-aman": "Punya Risk Management yang aman agar modal terproteksi dari MC",
+    "propfirm-funded": "Lolos evaluasi Prop Firm & dapat akun funded",
+  },
+};
+
+// "0812-3456-7890" / "+62 812…" / "62812…" -> 62XXXXXXXXX, or null if unusable
+function normalizeWaNumber(raw: unknown): string | null {
+  if (typeof raw !== "string") return null;
+  let d = raw.replace(/\D/g, "");
+  if (d.startsWith("0")) d = "62" + d.slice(1);
+  if (!/^62\d{7,12}$/.test(d)) return null;
+  return d;
+}
+
+function jsonOk(data: unknown, status = 200): Response {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: { "content-type": "application/json", "cache-control": "no-store" },
+  });
+}
+
+async function wahaSendText(env: Env, chatId: string, text: string): Promise<boolean> {
+  try {
+    const res = await fetch(env.WAHA_URL + "/api/sendText", {
+      method: "POST",
+      headers: { "x-api-key": env.WAHA_API_KEY ?? "", "content-type": "application/json" },
+      body: JSON.stringify({ chatId: chatId + "@c.us", text, session: "default" }),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+async function handleLead(request: Request, env: Env): Promise<Response> {
+  if (!env.WAHA_URL || !env.WAHA_API_KEY) {
+    return jsonOk({ ok: false, error: "lead endpoint is not configured" }, 503);
+  }
+  // same-origin form posts carry Origin; anything else (curl etc.) gets dropped
+  const origin = request.headers.get("origin") ?? "";
+  if (origin && !origin.endsWith("spteknik.com")) {
+    return jsonOk({ ok: false, error: "forbidden" }, 403);
+  }
+
+  const body = (await request.json().catch(() => null)) as Record<string, unknown> | null;
+  if (!body || typeof body !== "object") return jsonOk({ ok: false, error: "bad request" }, 400);
+
+  // honeypot: real visitors never see (or fill) this field — bots do. Pretend success.
+  if (typeof body.website === "string" && body.website.trim() !== "") {
+    return jsonOk({ ok: true });
+  }
+
+  const name = typeof body.name === "string" ? body.name.replace(/[\r\n]+/g, " ").trim().slice(0, 40) : "";
+  const phone = normalizeWaNumber(body.phone);
+  const consent = body.consent === true;
+
+  const pick = (key: "q1" | "q2" | "q3") => {
+    const choices = LEAD_CHOICES[key];
+    const v = typeof body[key] === "string" ? (body[key] as string) : "";
+    return choices[v] ?? null;
+  };
+  const q1 = pick("q1");
+  const q2 = pick("q2");
+  const q3 = pick("q3");
+
+  if (!name || !phone || !consent || !q1 || !q2 || !q3) {
+    return jsonOk({ ok: false, error: "lengkapi semua pertanyaan, nama, nomor WhatsApp, dan centang persetujuan." }, 400);
+  }
+
+  const summary = `1. Pengalaman: ${q1}\n2. Kendala utama: ${q2}\n3. Target 30 hari: ${q3}`;
+
+  const leadText =
+    `Halo ${name}! 🎁\n\n` +
+    `Terima kasih sudah mengisi form di spteknik.com. Free Trading Journal & Risk Calculator kamu sedang disiapkan — ` +
+    `tim SPTeknik akan menghubungi kamu lewat WhatsApp ini untuk membahas kendala trading kamu dan memberi rekomendasi bimbingan yang tepat.\n\n` +
+    `Ringkasan jawaban kamu:\n${summary}\n\n` +
+    `Sampai jumpa di chat berikutnya! 🙌\n— Tim SPTeknik`;
+
+  const sentToLead = await wahaSendText(env, phone, leadText);
+  if (!sentToLead) {
+    return jsonOk({ ok: false, error: "gagal mengirim ke WhatsApp — coba lagi sebentar." }, 502);
+  }
+
+  if (env.LEAD_ALERT_TO) {
+    const alert =
+      `🎯 LEAD BARU (form spteknik.com)\n\n` +
+      `Nama: ${name}\nWA: +${phone}\n\n${summary}\n\n` +
+      `Hubungi dia di nomor di atas — journal sudah dikirim otomatis ke chat-nya.`;
+    await wahaSendText(env, env.LEAD_ALERT_TO, alert); // best-effort; don't fail the request
+  }
+
+  return jsonOk({ ok: true });
+}
+
 async function serveMaintenance(request: Request, env: Env): Promise<Response> {
   // fetch the maintenance page from the asset layer (extensionless form —
   // /maintenance.html gets 307'd by html_handling), re-wrap as 503
@@ -242,6 +363,11 @@ export default {
       const allowed = MAINTENANCE_ALLOWED.some((p) => pathname.startsWith(p));
       if (!allowed) return serveMaintenance(request, env);
       return env.ASSETS.fetch(request);
+    }
+
+    // lead form endpoint (public/index.html #lead-form)
+    if (pathname === "/api/lead" && request.method === "POST") {
+      return handleLead(request, env);
     }
 
     const mapped = REDIRECTS[pathname];
