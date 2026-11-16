@@ -468,7 +468,8 @@ footer{transform:translateZ(0)}
   transition:background .15s ease,color .15s ease;
 }
 .lf-opt:has(input:checked) .lf-letter{background:#0E1216;color:#FFFFFF}
-.lf-actions{display:flex;justify-content:space-between;align-items:center}
+.lf-actions{display:flex;justify-content:flex-end;align-items:center}
+.lf-actions .lf-back{margin-right:auto}
 .lf-next{padding:13px 30px;font-size:.9rem}
 .lf-q.shake{animation:lfShake .32s ease}
 @keyframes lfShake{20%{transform:translateX(-6px)}45%{transform:translateX(5px)}70%{transform:translateX(-3px)}90%{transform:translateX(2px)}}
