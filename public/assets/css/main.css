@@ -451,3 +451,25 @@ footer{transform:translateZ(0)}
 .lf-back em{font-style:normal}
 .lf-back:hover{color:var(--ink)}
 .lf-panel .lf-hint{margin-bottom:-8px}
+
+/* --- wizard v2: circle question numbers, A-D option letters, explicit next --- */
+.lf-q legend{margin:0}
+.lf-q-head{display:flex;align-items:flex-start;gap:14px}
+.lf-num{
+  flex:0 0 32px;width:32px;height:32px;border-radius:999px;
+  background:#D9AE3A;color:#0E1216;display:inline-flex;align-items:center;justify-content:center;
+  font-family:'Fragment Mono',ui-monospace,monospace;font-weight:600;font-size:16px;
+}
+.lf-q-text{font-weight:700;font-size:1.02rem;color:var(--ink);line-height:1.35;padding-top:4px}
+.lf-opt .lf-letter{
+  flex:0 0 26px;width:26px;height:26px;border-radius:999px;margin-top:2px;
+  background:#F0E9DC;color:#7A5C0A;display:inline-flex;align-items:center;justify-content:center;
+  font-family:'Fragment Mono',ui-monospace,monospace;font-weight:600;font-size:13px;
+  transition:background .15s ease,color .15s ease;
+}
+.lf-opt:has(input:checked) .lf-letter{background:#0E1216;color:#D9AE3A}
+.lf-nextrow{display:flex;justify-content:flex-end}
+.lf-next{padding:13px 30px;font-size:.9rem}
+.lf-q.shake{animation:lfShake .32s ease}
+@keyframes lfShake{20%{transform:translateX(-6px)}45%{transform:translateX(5px)}70%{transform:translateX(-3px)}90%{transform:translateX(2px)}}
+@media (prefers-reduced-motion: reduce){.lf-q.shake{animation:none}}
