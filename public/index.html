@@ -489,10 +489,14 @@ src="https://www.facebook.com/tr?id=2015711322628650&ev=PageView&noscript=1"
     if (!payload.q1) { show(0, -1); fail('Pilih jawaban pertanyaan 1 dulu ya.'); return; }
     if (!payload.q2.length) { show(1, -1); fail('Pilih jawaban pertanyaan 2 dulu ya.'); return; }
     if (!payload.q3.length) { show(2, -1); fail('Pilih jawaban pertanyaan 3 dulu ya.'); return; }
-    if (!payload.name || !payload.phone || !payload.consent) {
-      fail('Isi nama, nomor WhatsApp, dan centang persetujuan ya.');
-      return;
-    }
+    var fill = [];
+    if (!payload.name) fill.push('nama');
+    if (!payload.phone) fill.push('nomor WhatsApp');
+    var msg = '';
+    if (fill.length === 1) msg = 'Isi ' + fill[0] + ' kamu dulu ya.';
+    else if (fill.length === 2) msg = 'Isi nama dan nomor WhatsApp kamu dulu ya.';
+    if (!payload.consent) msg += (msg ? ' Dan centang persetujuan ya.' : 'Centang persetujuan dulu ya.');
+    if (msg) { fail(msg); return; }
     btn.disabled = true;
     btn.textContent = 'MENGIRIM KE WHATSAPP KAMU\u2026';
     fetch('/api/lead', {
